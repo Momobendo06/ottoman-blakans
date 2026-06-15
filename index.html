@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Empire Ottoman · Balkans 1354–1683</title>
+  <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <nav>
+    <span class="nav-brand">Empire Ottoman · Balkans</span>
+    <div class="nav-links">
+      <a href="index.html" class="active">Accueil</a>
+      <a href="data.html">Données</a>
+      <a href="process.html">Traitement</a>
+      <a href="analysis.html">Analyses</a>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <div class="hero-eyebrow">1354 — 1683</div>
+    <h1 class="hero-title">L'expansion ottomane<br><em>dans les Balkans</em></h1>
+    <p class="hero-sub">
+      Comment l'expansion militaire ottomane dans les Balkans a-t-elle progressé
+      géographiquement et temporellement, et quelles différences observe-t-on
+      d'un sultan à l'autre ?
+    </p>
+    <div class="hero-stats">
+      <div class="hstat">
+        <span class="hstat-num">260</span>
+        <span class="hstat-lbl">batailles</span>
+      </div>
+      <div class="hstat-div"></div>
+      <div class="hstat">
+        <span class="hstat-num">329</span>
+        <span class="hstat-lbl">années</span>
+      </div>
+      <div class="hstat-div"></div>
+      <div class="hstat">
+        <span class="hstat-num">14</span>
+        <span class="hstat-lbl">sultans</span>
+      </div>
+      <div class="hstat-div"></div>
+      <div class="hstat">
+        <span class="hstat-num">2</span>
+        <span class="hstat-lbl">analyses</span>
+      </div>
+    </div>
+  </header>
+
+  <main>
+
+    <section class="section-intro">
+      <p class="intro-text">
+        Ce projet en humanités numériques examine l'expansion territoriale de l'Empire ottoman
+        dans la péninsule balkanique entre 1354 et 1683 — de la prise de Gallipoli jusqu'au
+        siège de Vienne. À partir de données extraites de Wikidata et traitées en Python,
+        deux analyses complémentaires sont proposées : une carte interactive de la progression
+        géographique des batailles, et une étude statistique de l'intensité militaire par règne.
+      </p>
+    </section>
+
+    <section class="cards">
+
+      <a href="data.html" class="card">
+        <div class="card-icon">⛁</div>
+        <h2 class="card-title">Données</h2>
+        <p class="card-desc">
+          260 batailles extraites de Wikidata via une requête SPARQL.
+          Coordonnées géographiques, dates, sultans et guerres associées.
+        </p>
+        <span class="card-link">Voir les données →</span>
+      </a>
+
+      <a href="process.html" class="card">
+        <div class="card-icon">⌥</div>
+        <h2 class="card-title">Traitement</h2>
+        <p class="card-desc">
+          Pipeline de nettoyage en Python en 6 étapes : déduplication,
+          résolution des dates, harmonisation des noms de guerres.
+        </p>
+        <span class="card-link">Voir le traitement →</span>
+      </a>
+
+      <a href="analysis.html" class="card">
+        <div class="card-icon">◈</div>
+        <h2 class="card-title">Analyses</h2>
+        <p class="card-desc">
+          Carte interactive Leaflet.js sultan par sultan et graphique
+          de distribution temporelle des conflits par règne.
+        </p>
+        <span class="card-link">Voir les analyses →</span>
+      </a>
+
+    </section>
+
+    <section class="timeline-preview">
+      <div class="tp-label">Sultans couverts</div>
+      <div class="timeline-bar">
+        <div class="tb-seg" style="left:0%;width:2.4%;"    title="Orhan (1326–1362)">        <span>Orhan</span></div>
+        <div class="tb-seg" style="left:2.4%;width:2.7%;"  title="Murad Iᵉʳ (1362–1389)">   <span>Murad I</span></div>
+        <div class="tb-seg" style="left:5.1%;width:3.9%;"  title="Bayezid Iᵉʳ (1389–1402)"> <span>Bayezid I</span></div>
+        <div class="tb-seg" style="left:9%;width:2.4%;"    title="Mehmed Iᵉʳ (1413–1421)">  <span>Mehmed I</span></div>
+        <div class="tb-seg" style="left:11.4%;width:9.1%;" title="Murad II (1421–1451)">     <span>Murad II</span></div>
+        <div class="tb-seg" style="left:20.5%;width:9.1%;" title="Mehmed II (1451–1481)">    <span>Mehmed II</span></div>
+        <div class="tb-seg" style="left:29.6%;width:9.4%;" title="Bayezid II (1481–1512)">   <span>Bayezid II</span></div>
+        <div class="tb-seg" style="left:39%;width:2.7%;"   title="Selim Iᵉʳ (1512–1520)">   <span>Selim I</span></div>
+        <div class="tb-seg" style="left:41.7%;width:13.8%" title="Soliman Iᵉʳ (1520–1566)"> <span>Soliman I</span></div>
+        <div class="tb-seg" style="left:55.5%;width:2.4%;" title="Selim II (1566–1574)">     <span>Selim II</span></div>
+        <div class="tb-seg" style="left:57.9%;width:6.1%;" title="Murad III (1574–1595)">    <span>Murad III</span></div>
+        <div class="tb-seg" style="left:64%;width:2.7%;"   title="Mehmed III (1595–1603)">   <span>Mehmed III</span></div>
+        <div class="tb-seg" style="left:66.7%;width:19.7%" title="Mehmed IV (1648–1683)">    <span>Mehmed IV</span></div>
+      </div>
+      <div class="tb-axis">
+        <span>1354</span><span>1400</span><span>1450</span><span>1500</span>
+        <span>1550</span><span>1600</span><span>1650</span><span>1683</span>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <span>Muhamed Mehic · Université de Neuchâtel · 2026</span>
+    <span>Données : <a href="https://www.wikidata.org" target="_blank">Wikidata</a> (CC0)</span>
+  </footer>
+
+</body>
+</html>
