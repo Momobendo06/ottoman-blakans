@@ -18,8 +18,8 @@ import networkx as nx
 
 # ─── 0. CONFIGURATION ────────────────────────────────────────────────────────
 
-INPUT_CSV     = "ottoman_balkans_battles_clean.csv"
-OUTPUT_RESEAU = "output_reseau_sultan_guerre.png"
+INPUT_CSV     = "../data/ottoman_balkans_battles_clean.csv"
+OUTPUT_RESEAU = "../outputs/output_reseau_sultan_guerre.png"
 
 COULEURS_SULTANS = {
     "Orhan"        : "#8b3a1a",

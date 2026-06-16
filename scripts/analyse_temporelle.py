@@ -17,9 +17,9 @@ import numpy as np
 
 # ─── 0. CONFIGURATION ────────────────────────────────────────────────────────
 
-INPUT_CSV  = "ottoman_balkans_battles_clean.csv"
-OUTPUT_BAR = "output_barplot_sultans.png"
-OUTPUT_CUM = "output_courbe_cumulative.png"
+INPUT_CSV  = "../data/ottoman_balkans_battles_clean.csv"
+OUTPUT_BAR = "../outputs/output_barplot_sultans.png"
+OUTPUT_CUM = "../outputs/output_courbe_cumulative.png"
 
 # Palette cohérente avec le site web (parchemin / rouille / teal)
 COULEURS_SULTANS = {
