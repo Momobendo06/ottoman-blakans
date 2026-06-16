@@ -689,3 +689,87 @@
     margin-top: 6px;
     text-align: center;
   }
+  
+  /* ── VISUALISATIONS (analysis.html) ──────────────────────────────────────── */
+  
+  .viz-block {
+    margin-top: 24px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  
+  .viz-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 14px;
+    background: var(--parchment2);
+    border-bottom: 1px solid var(--border);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+  }
+  
+  .viz-img-wrap {
+    background: var(--parchment);
+    padding: 12px;
+    text-align: center;
+  }
+  
+  .viz-img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 2px;
+  }
+  
+  /* ── INTERPRÉTATION ───────────────────────────────────────────────────────── */
+  
+  .analysis-interp {
+    margin-top: 20px;
+    padding: 20px 24px;
+    background: var(--parchment2);
+    border-left: 3px solid var(--rust);
+    border-radius: 0 4px 4px 0;
+  }
+  
+  .interp-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--rust);
+    margin-bottom: 10px;
+  }
+  
+  .analysis-interp p {
+    font-size: 17px;
+    line-height: 1.7;
+    color: var(--ink);
+  }
+  
+  .analysis-interp p + p {
+    margin-top: 12px;
+  }
+  
+  /* ── NOTE MÉTHODE ─────────────────────────────────────────────────────────── */
+  
+  .method-note {
+    margin-top: 20px;
+    padding: 14px 18px;
+    background: var(--parchment3);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    line-height: 1.7;
+  }
+  
+  .method-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--gold);
+    margin-bottom: 6px;
+  }

@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Analyses · Empire Ottoman Balkans</title>
+  <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <nav>
+    <span class="nav-brand">Empire Ottoman · Balkans</span>
+    <div class="nav-links">
+      <a href="index.html">Accueil</a>
+      <a href="data.html">Données</a>
+      <a href="process.html">Traitement</a>
+      <a href="analysis.html" class="active">Analyses</a>
+    </div>
+  </nav>
+
+  <header class="page-header">
+    <div class="page-eyebrow">Résultats</div>
+    <h1 class="page-title">Deux analyses,<br><em>une progression dévoilée</em></h1>
+    <p class="page-desc">
+      À partir des 198 batailles nettoyées, deux analyses complémentaires répondent
+      à la question de recherche : une étude statistique de la distribution temporelle
+      des conflits par règne, et une analyse de réseau sultan ↔ conflit.
+    </p>
+  </header>
+
+  <main>
+
+    <!-- ── ANALYSE A ──────────────────────────────────────────────────────── -->
+    <section class="content-section">
+      <div class="section-label">Analyse A · Statistique</div>
+      <h2 class="section-title">Distribution temporelle des batailles par sultan</h2>
+
+      <div class="section-body">
+        <p>
+          Cette analyse quantifie l'intensité militaire de chaque règne en comptant
+          le nombre de batailles menées dans les Balkans. Elle révèle des différences
+          marquées d'un sultan à l'autre, reflétant leurs ambitions conquérantes respectives
+          et le contexte géopolitique de leur époque.
+        </p>
+      </div>
+
+      <!-- Barplot -->
+      <div class="viz-block">
+        <div class="viz-label">
+          <span class="code-lang">Matplotlib</span>
+          Nombre de batailles par sultan — ordre chronologique
+        </div>
+        <div class="viz-img-wrap">
+          <img src="outputs/output_barplot_sultans.png"
+               alt="Barplot du nombre de batailles par sultan"
+               class="viz-img">
+        </div>
+      </div>
+
+      <div class="analysis-interp">
+        <div class="interp-label">Interprétation</div>
+        <p>
+          Mehmed II domine largement le corpus avec 34 batailles, soit 17 % du total.
+          Son règne (1451–1481) correspond à la phase la plus intense de l'expansion ottomane :
+          prise de Constantinople (1453), conquête de la Grèce, de la Serbie et de la Bosnie.
+          Mehmed IV (25 batailles) et Soliman Iᵉʳ (22 batailles) confirment cette tendance
+          à l'intensification lors des grands règnes. À l'inverse, les sultans au règne court
+          — Mustafa Iᵉʳ (1 bataille), Osman II (2) — ont laissé peu de traces dans le corpus.
+        </p>
+        <p>
+          À noter : le nombre de batailles dans Wikidata n'est pas un indicateur parfait
+          de l'activité militaire réelle — il reflète aussi le degré de documentation
+          disponible pour chaque période.
+        </p>
+      </div>
+
+      <!-- Courbe cumulative -->
+      <div class="viz-block" style="margin-top: 40px;">
+        <div class="viz-label">
+          <span class="code-lang">Matplotlib</span>
+          Cumul des batailles dans le temps (zones colorées = règnes)
+        </div>
+        <div class="viz-img-wrap">
+          <img src="outputs/output_courbe_cumulative.png"
+               alt="Courbe cumulative des batailles par règne"
+               class="viz-img">
+        </div>
+      </div>
+
+      <div class="analysis-interp">
+        <div class="interp-label">Interprétation</div>
+        <p>
+          La courbe cumulative révèle le rythme de l'expansion : la pente s'accentue
+          nettement sous Mehmed II (1451–1481), confirmant son règne comme le pic
+          de l'expansion balkanique. On observe aussi une accélération sous Soliman Iᵉʳ
+          (1520–1566) et Mehmed III (1595–1603), tandis que la période de l'interrègne
+          (1402–1413) marque un plateau visible dans la courbe.
+        </p>
+      </div>
+
+      <div class="method-note">
+        <div class="method-label">Méthode</div>
+        Script <code>analyse_temporelle.py</code> · bibliothèque Matplotlib 3.x ·
+        données : <code>ottoman_balkans_battles_clean.csv</code> (198 entrées)
+        <div style="margin-top: 12px;">
+          <a class="dl-btn dl-btn--secondary" href="scripts/analyse_temporelle.py" download>
+            ⬇ Télécharger le script
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── ANALYSE B ──────────────────────────────────────────────────────── -->
+    <section class="content-section">
+      <div class="section-label">Analyse B · Réseau</div>
+      <h2 class="section-title">Réseau sultan ↔ conflits</h2>
+
+      <div class="section-body">
+        <p>
+          Cette analyse de réseau bipartite relie chaque sultan aux conflits
+          (<code>part_ofLabel</code>) dans lesquels il a participé.
+          La taille des nœuds est proportionnelle au nombre de batailles ;
+          l'épaisseur des arêtes reflète le nombre de batailles partagées
+          entre un sultan et un conflit donné. Sur 198 entrées, 168 ont
+          un conflit associé, formant un graphe de 69 nœuds et 78 arêtes.
+        </p>
+      </div>
+
+      <div class="viz-block">
+        <div class="viz-label">
+          <span class="code-lang">NetworkX</span>
+          Graphe bipartite sultan (gauche) ↔ conflit (droite)
+        </div>
+        <div class="viz-img-wrap">
+          <img src="outputs/output_reseau_sultan_guerre.png"
+               alt="Réseau bipartite sultan-conflit"
+               class="viz-img">
+        </div>
+      </div>
+
+      <div class="analysis-interp">
+        <div class="interp-label">Interprétation</div>
+        <p>
+          Le réseau met en évidence les conflits transrègnaux — ceux qui traversent
+          plusieurs sultans. Les <em>Ottoman Wars in Europe</em> constituent le nœud
+          le plus connecté, reliant un grand nombre de sultans sur l'ensemble de la période.
+          À l'inverse, certains conflits sont strictement limités à un seul règne,
+          comme la <em>Cretan War (1645–1669)</em> sous Ibrahim Iᵉʳ et Mehmed IV.
+        </p>
+        <p>
+          Cette structure révèle que l'expansion ottomane n'est pas une série de guerres
+          isolées propres à chaque sultan, mais un enchevêtrement de conflits durables
+          traversant plusieurs règnes successifs.
+        </p>
+      </div>
+
+      <div class="method-note">
+        <div class="method-label">Méthode</div>
+        Script <code>analyse_reseau.py</code> · bibliothèques NetworkX 3.x et Matplotlib 3.x ·
+        graphe bipartite, layout manuel (sultans à gauche, conflits à droite) ·
+        168 entrées avec conflit associé · 50 conflits uniques
+        <div style="margin-top: 12px;">
+          <a class="dl-btn dl-btn--secondary" href="scripts/analyse_reseau.py" download>
+            ⬇ Télécharger le script
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── SYNTHÈSE ───────────────────────────────────────────────────────── -->
+    <section class="content-section">
+      <div class="section-label">Synthèse</div>
+      <h2 class="section-title">Réponse à la question de recherche</h2>
+      <div class="section-body">
+        <p>
+          Les deux analyses répondent conjointement à la question de départ.
+          Sur le plan temporel, l'expansion ottomane dans les Balkans n'est pas linéaire :
+          elle connaît des phases d'accélération sous les sultans les plus conquérants
+          (Mehmed II, Soliman Iᵉʳ) et des périodes de stagnation (interrègne, règnes courts).
+        </p>
+        <p>
+          Sur le plan des conflits, le réseau montre que certaines guerres traversent
+          plusieurs règnes successifs, soulignant la continuité stratégique de l'Empire
+          au-delà des individus. Les différences entre sultans sont donc à la fois
+          quantitatives (nombre de batailles) et qualitatives (types de conflits engagés).
+        </p>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <span>Muhamed Mehic · Université de Neuchâtel · 2026</span>
+    <span>Données : <a href="https://www.wikidata.org" target="_blank">Wikidata</a> (CC0)</span>
+  </footer>
+
+</body>
+</html>
