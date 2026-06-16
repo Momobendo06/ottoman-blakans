@@ -773,3 +773,119 @@
     color: var(--gold);
     margin-bottom: 6px;
   }
+  
+  /* ── CENTRAGE GLOBAL ──────────────────────────────────────────────────────── */
+  
+  nav {
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  /* Wrapper pour centrer nav, header et main */
+  nav,
+  .hero,
+  .page-header {
+    padding-left: clamp(20px, 5vw, 80px);
+    padding-right: clamp(20px, 5vw, 80px);
+  }
+  
+  body {
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+    box-shadow: 0 0 60px rgba(90,60,20,0.08);
+  }
+  
+  /* Remettre nav sticky sur toute la largeur */
+  nav {
+    position: sticky;
+    top: 0;
+    max-width: 100%;
+    padding-left: clamp(20px, 5vw, 80px);
+    padding-right: clamp(20px, 5vw, 80px);
+  }
+  
+  main {
+    padding-left: clamp(20px, 5vw, 80px);
+    padding-right: clamp(20px, 5vw, 80px);
+  }
+  
+  footer {
+    padding-left: clamp(20px, 5vw, 80px);
+    padding-right: clamp(20px, 5vw, 80px);
+  }
+  
+  /* ── TOOLTIP SULTANS ──────────────────────────────────────────────────────── */
+  
+  .sultan-tooltip {
+    position: fixed;
+    z-index: 999;
+    background: var(--ink);
+    color: var(--parchment);
+    border-radius: 4px;
+    padding: 12px 16px;
+    pointer-events: none;
+    opacity: 0;
+    transform: translateY(4px);
+    transition: opacity 0.15s, transform 0.15s;
+    min-width: 180px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  }
+  
+  .sultan-tooltip.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  .tt-name {
+    font-family: 'Crimson Pro', serif;
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 2px;
+  }
+  
+  .tt-dates {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--gold-light);
+    letter-spacing: 0.06em;
+    margin-bottom: 8px;
+  }
+  
+  .tt-battles {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--parchment2);
+    margin-bottom: 6px;
+  }
+  
+  .tt-battles span {
+    font-size: 20px;
+    font-weight: 500;
+    color: var(--rust);
+    margin-right: 4px;
+    font-family: 'Crimson Pro', serif;
+  }
+  
+  .tt-info {
+    font-size: 13px;
+    color: var(--parchment3);
+    line-height: 1.5;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    padding-top: 6px;
+    margin-top: 4px;
+  }
+  
+  /* ── ANIMATIONS SCROLL ────────────────────────────────────────────────────── */
+  
+  .anim-hidden {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.45s ease, transform 0.45s ease;
+  }
+  
+  .anim-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
