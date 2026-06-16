@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Données · Empire Ottoman Balkans</title>
+  <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <nav>
+    <span class="nav-brand">Empire Ottoman · Balkans</span>
+    <div class="nav-links">
+      <a href="index.html">Accueil</a>
+      <a href="data.html" class="active">Données</a>
+      <a href="process.html">Traitement</a>
+      <a href="analysis.html">Analyses</a>
+    </div>
+  </nav>
+
+  <header class="page-header">
+    <div class="page-eyebrow">Source des données</div>
+    <h1 class="page-title">260 batailles,<br><em>une requête SPARQL</em></h1>
+    <p class="page-desc">
+      Les données proviennent de Wikidata, la base de connaissances libre et collaborative
+      du projet Wikimedia. Elles ont été extraites via une requête SPARQL ciblant
+      les batailles ottomanes dans les Balkans entre 1354 et 1683.
+    </p>
+  </header>
+
+  <main>
+
+    <!-- ── SOURCE ─────────────────────────────────────────────────────────── -->
+    <section class="content-section">
+      <div class="section-label">Source</div>
+      <h2 class="section-title">Wikidata & SPARQL</h2>
+      <div class="section-body">
+        <p>
+          Wikidata est une base de données structurée et librement réutilisable (licence CC0)
+          maintenue par la Fondation Wikimedia. Elle recense des millions d'entités —
+          personnes, lieux, événements — sous forme de triplets RDF interrogeables
+          via le langage SPARQL.
+        </p>
+        <p>
+          La requête SPARQL a été construite pour extraire toutes les batailles
+          ayant eu lieu dans le périmètre géographique des Balkans
+          (latitude 35–48°N, longitude 13–30°E) et attribuées à un sultan ottoman.
+          L'attribution des sultans a été réalisée automatiquement en comparant
+          la date de chaque bataille aux dates de règne définies dans l'extracteur.
+        </p>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header">
+          <span>Requête SPARQL — Wikidata Query Service</span>
+          <span class="code-lang">SPARQL</span>
+        </div>
+        <pre>SELECT ?battle ?battleLabel ?date ?location ?locationLabel
+       ?lat ?lon ?conflict ?conflictLabel
+WHERE {
+  ?battle wdt:P31/wdt:P279* wd:Q178561 .   # instance de bataille
+  ?battle wdt:P585 ?date .                   # date
+  ?battle wdt:P276 ?location .               # lieu
+  ?location wdt:P625 ?coord .                # coordonnées
+
+  BIND(geof:latitude(?coord)  AS ?lat)
+  BIND(geof:longitude(?coord) AS ?lon)
+
+  FILTER(?lat >= 35 && ?lat <= 48)           # filtre Balkans
+  FILTER(?lon >= 13 && ?lon <= 30)
+
+  OPTIONAL { ?battle wdt:P361 ?conflict }    # conflit parent
+
+  SERVICE wikibase:label {
+    bd:serviceParam wikibase:language "en" .
+  }
+}
+ORDER BY ?date</pre>
+      </div>
+    </section>
+
+    <!-- ── VOLUME & FORMAT ────────────────────────────────────────────────── -->
+    <section class="content-section">
+      <div class="section-label">Volume & format</div>
+      <h2 class="section-title">Structure du corpus</h2>
+      <div class="section-body">
+        <p>
+          Le corpus brut extrait de Wikidata contient <strong>260 entrées</strong>,
+          couvrant la période 1354–1683. Après nettoyage (voir la page Traitement),
+          198 entrées valides ont été retenues pour les analyses.
+          Chaque entrée correspond à une bataille unique et contient les colonnes suivantes :
+        </p>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Colonne</th>
+              <th>Type</th>
+              <th>Description</th>
+              <th>Exemple</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>battleLabel</code></td>
+              <td>texte</td>
+              <td>Nom de la bataille en anglais</td>
+              <td>Battle of Kosovo</td>
+            </tr>
+            <tr>
+              <td><code>date</code></td>
+              <td>date</td>
+              <td>Date de la bataille (YYYY-MM-DD)</td>
+              <td>1389-07-06</td>
+            </tr>
+            <tr>
+              <td><code>date_precision</code></td>
+              <td>texte</td>
+              <td>Précision de la date</td>
+              <td>day / month / year</td>
+            </tr>
+            <tr>
+              <td><code>locationLabel</code></td>
+              <td>texte</td>
+              <td>Nom du lieu</td>
+              <td>Kosovo Field</td>
+            </tr>
+            <tr>
+              <td><code>lat</code></td>
+              <td>décimal</td>
+              <td>Latitude (degrés décimaux)</td>
+              <td>42.7175</td>
+            </tr>
+            <tr>
+              <td><code>lon</code></td>
+              <td>décimal</td>
+              <td>Longitude (degrés décimaux)</td>
+              <td>21.0850</td>
+            </tr>
+            <tr>
+              <td><code>sultan</code></td>
+              <td>texte</td>
+              <td>Sultan régnant lors de la bataille</td>
+              <td>Bayezid Iᵉʳ</td>
+            </tr>
+            <tr>
+              <td><code>sultan_wikidata</code></td>
+              <td>texte</td>
+              <td>Identifiant Wikidata du sultan</td>
+              <td>Q170058</td>
+            </tr>
+            <tr>
+              <td><code>part_ofLabel</code></td>
+              <td>texte</td>
+              <td>Conflit ou guerre dont fait partie la bataille</td>
+              <td>Ottoman Wars in Europe</td>
+            </tr>
+            <tr>
+              <td><code>wikidata_url</code></td>
+              <td>URL</td>
+              <td>Lien vers l'entité Wikidata</td>
+              <td>wikidata.org/entity/Q179288</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ── APERÇU DES DONNÉES ─────────────────────────────────────────────── -->
+    <section class="content-section">
+      <div class="section-label">Aperçu</div>
+      <h2 class="section-title">Premières lignes du corpus</h2>
+      <div class="section-body">
+        <p>Voici les dix premières entrées du fichier CSV nettoyé.</p>
+      </div>
+
+      <div class="table-wrap">
+        <table id="preview-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Bataille</th>
+              <th>Date</th>
+              <th>Lieu</th>
+              <th>Sultan</th>
+              <th>Conflit</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>1</td><td>Fall of Gallipoli</td><td>1354-03</td><td>Gelibolu</td><td>Orhan</td><td>Byzantine–Ottoman Wars</td></tr>
+            <tr><td>2</td><td>Battle of Ihtiman</td><td>1355</td><td>Ihtiman</td><td>Orhan</td><td>Bulgarian–Ottoman Wars</td></tr>
+            <tr><td>3</td><td>Battle of Adrianópolis</td><td>1355</td><td>Edirne</td><td>Orhan</td><td>—</td></tr>
+            <tr><td>4</td><td>Battle of Achelous</td><td>1359</td><td>Achelous River</td><td>Orhan</td><td>Albanian-Epirote War of 1359</td></tr>
+            <tr><td>5</td><td>Battle of Megara</td><td>1359</td><td>Megara Gulf</td><td>Orhan</td><td>Crusades after Acre of 1291–1399</td></tr>
+            <tr><td>6</td><td>Battle of Sırp Sındığı</td><td>1364</td><td>Maritsa</td><td>Murad Iᵉʳ</td><td>Ottoman Wars in Europe</td></tr>
+            <tr><td>7</td><td>Reconquest of Gallipoli</td><td>1366</td><td>Gallipoli</td><td>Murad Iᵉʳ</td><td>Byzantine–Ottoman Wars</td></tr>
+            <tr><td>8</td><td>Battle of Kosovo</td><td>1369</td><td>Zvečan</td><td>Murad Iᵉʳ</td><td>Fall of the Serbian Empire</td></tr>
+            <tr><td>9</td><td>Battle of Maritsa</td><td>1371-09-26</td><td>Ormenio</td><td>Murad Iᵉʳ</td><td>Serbian–Ottoman Wars</td></tr>
+            <tr><td>10</td><td>Battle of Gardiki</td><td>1375</td><td>Gardiki Castle</td><td>Murad Iᵉʳ</td><td>Byzantine–Latin wars</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ── RÉPARTITION ────────────────────────────────────────────────────── -->
+    <section class="content-section">
+      <div class="section-label">Répartition</div>
+      <h2 class="section-title">Distribution par sultan</h2>
+      <div class="section-body">
+        <p>
+          Le corpus couvre 19 sultans (dont une période d'interrègne 1402–1413).
+          La distribution est inégale : Mehmed II concentre à lui seul 34 batailles,
+          soit 17 % du corpus, reflet de son règne particulièrement conquérant
+          (prise de Constantinople en 1453, expansion en Grèce et dans les Balkans).
+        </p>
+      </div>
+
+      <div class="sultan-bars">
+        <div class="sbar-row"><span class="sbar-name">Mehmed II</span>      <div class="sbar-wrap"><div class="sbar-fill" style="width:100%">34</div></div></div>
+        <div class="sbar-row"><span class="sbar-name">Mehmed IV</span>      <div class="sbar-wrap"><div class="sbar-fill" style="width:73.5%">25</div></div></div>
+        <div class="sbar-row"><span class="sbar-name">Soliman Iᵉʳ</span>   <div class="sbar-wrap"><div class="sbar-fill" style="width:64.7%">22</div></div></div>
+        <div class="sbar-row"><span class="sbar-name">Murad II</span>       <div class="sbar-wrap"><div class="sbar-fill" style="width:58.8%">20</div></div></div>
+        <div class="sbar-row"><span class="sbar-name">Mehmed III</span>     <div class="sbar-wrap"><div class="sbar-fill" style="width:58.8%">20</div></div></div>
+        <div class="sbar-row"><span class="sbar-name">Bayezid II</span>     <div class="sbar-wrap"><div class="sbar-fill" style="width:44.1%">15</div></div></div>
+        <div class="sbar-row"><span class="sbar-name">Murad Iᵉʳ</span>     <div class="sbar-wrap"><div class="sbar-fill" style="width:23.5%">8</div></div></div>
+        <div class="sbar-row"><span class="sbar-name">Murad III</span>      <div class="sbar-wrap"><div class="sbar-fill" style="width:23.5%">8</div></div></div>
+        <div class="sbar-row"><span class="sbar-name">Ibrahim Iᵉʳ</span>   <div class="sbar-wrap"><div class="sbar-fill" style="width:20.6%">7</div></div></div>
+        <div class="sbar-row"><span class="sbar-name">Orhan</span>          <div class="sbar-wrap"><div class="sbar-fill" style="width:17.6%">6</div></div></div>
+        <div class="sbar-row"><span class="sbar-name">Mehmed Iᵉʳ</span>    <div class="sbar-wrap"><div class="sbar-fill" style="width:17.6%">6</div></div></div>
+        <div class="sbar-row"><span class="sbar-name">Selim II</span>       <div class="sbar-wrap"><div class="sbar-fill" style="width:17.6%">6</div></div></div>
+        <div class="sbar-row"><span class="sbar-name">Bayezid Iᵉʳ</span>   <div class="sbar-wrap"><div class="sbar-fill" style="width:14.7%">5</div></div></div>
+        <div class="sbar-row"><span class="sbar-name">Murad IV</span>       <div class="sbar-wrap"><div class="sbar-fill" style="width:14.7%">5</div></div></div>
+      </div>
+    </section>
+
+    <!-- ── TÉLÉCHARGEMENT ─────────────────────────────────────────────────── -->
+    <section class="content-section">
+      <div class="section-label">Accès aux données</div>
+      <h2 class="section-title">Télécharger le corpus</h2>
+      <div class="section-body">
+        <p>
+          Les données brutes et nettoyées sont disponibles dans le dossier technique
+          du projet. La licence CC0 de Wikidata autorise leur libre réutilisation.
+        </p>
+      </div>
+      <div class="dl-links">
+        <a class="dl-btn" href="data/ottoman_balkans_battles_clean.csv" download>
+          ⬇ CSV nettoyé (198 entrées)
+        </a>
+        <a class="dl-btn dl-btn--secondary" href="https://www.wikidata.org/wiki/Wikidata:SPARQL_query_service" target="_blank">
+          ↗ Wikidata Query Service
+        </a>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <span>Muhamed Mehic · Université de Neuchâtel · 2026</span>
+    <span>Données : <a href="https://www.wikidata.org" target="_blank">Wikidata</a> (CC0)</span>
+  </footer>
+
+</body>
+</html>
