@@ -564,3 +564,128 @@
     border-radius: 2px;
     color: var(--rust);
   }
+  
+  /* ── PIPELINE DIAGRAM (process.html) ─────────────────────────────────────── */
+  
+  .pipeline-diagram {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 28px;
+    padding: 20px;
+    background: var(--parchment2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+  }
+  
+  .pipe-node {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: var(--parchment3);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 8px 12px;
+    min-width: 64px;
+  }
+  
+  .pipe-node--input,
+  .pipe-node--output {
+    background: var(--rust);
+    border-color: var(--rust-dark);
+  }
+  
+  .pipe-node--input .pipe-num,
+  .pipe-node--output .pipe-num,
+  .pipe-node--input .pipe-label,
+  .pipe-node--output .pipe-label {
+    color: var(--parchment);
+  }
+  
+  .pipe-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--rust);
+  }
+  
+  .pipe-label {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+  
+  .pipe-arrow {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--gold);
+    font-size: 18px;
+    line-height: 1;
+  }
+  
+  /* ── STEP HEADER (process.html) ───────────────────────────────────────────── */
+  
+  .step-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    margin-bottom: 16px;
+  }
+  
+  .step-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 32px;
+    font-weight: 500;
+    color: var(--rust);
+    opacity: 0.35;
+    line-height: 1;
+    flex-shrink: 0;
+    min-width: 44px;
+  }
+  
+  .step-header .section-title {
+    margin-bottom: 0;
+  }
+  
+  /* ── REPORT GRID (process.html) ───────────────────────────────────────────── */
+  
+  .report-grid {
+    display: flex;
+    gap: 16px;
+    margin-top: 24px;
+    flex-wrap: wrap;
+  }
+  
+  .report-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px 28px;
+    background: var(--parchment2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    min-width: 140px;
+  }
+  
+  .report-card--removed { border-color: var(--gold); }
+  .report-card--final   { border-color: var(--teal); }
+  
+  .report-num {
+    font-size: 40px;
+    font-weight: 300;
+    color: var(--rust);
+    line-height: 1;
+  }
+  
+  .report-card--removed .report-num { color: var(--gold); }
+  .report-card--final .report-num   { color: var(--teal); }
+  
+  .report-lbl {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    margin-top: 6px;
+    text-align: center;
+  }

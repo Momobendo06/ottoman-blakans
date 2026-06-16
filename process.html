@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Traitement · Empire Ottoman Balkans</title>
+  <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <nav>
+    <span class="nav-brand">Empire Ottoman · Balkans</span>
+    <div class="nav-links">
+      <a href="index.html">Accueil</a>
+      <a href="data.html">Données</a>
+      <a href="process.html" class="active">Traitement</a>
+      <a href="analysis.html">Analyses</a>
+    </div>
+  </nav>
+
+  <header class="page-header">
+    <div class="page-eyebrow">Pipeline de nettoyage</div>
+    <h1 class="page-title">260 → 198 entrées,<br><em>6 étapes en Python</em></h1>
+    <p class="page-desc">
+      Les données brutes extraites de Wikidata contiennent des doublons, des labels non résolus
+      et des batailles hors périmètre. Ce pipeline Python les transforme en un corpus
+      propre et analysable.
+    </p>
+  </header>
+
+  <main>
+
+    <!-- ── OVERVIEW ───────────────────────────────────────────────────────── -->
+    <section class="content-section">
+      <div class="section-label">Vue d'ensemble</div>
+      <h2 class="section-title">Le pipeline en un coup d'œil</h2>
+      <div class="section-body">
+        <p>
+          Le script <code>clean_ottoman_battles.py</code> prend en entrée le CSV brut exporté
+          par l'extracteur Wikidata et produit un CSV nettoyé prêt pour l'analyse.
+          Il s'utilise en ligne de commande :
+        </p>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header">
+          <span>Utilisation</span>
+          <span class="code-lang">BASH</span>
+        </div>
+        <pre>python clean_ottoman_battles.py
+python clean_ottoman_battles.py --input mon_fichier.csv
+python clean_ottoman_battles.py --output resultat.csv
+python clean_ottoman_battles.py --no-filter-scope</pre>
+      </div>
+
+      <!-- Diagramme des étapes -->
+      <div class="pipeline-diagram">
+        <div class="pipe-node pipe-node--input">
+          <span class="pipe-num">CSV brut</span>
+          <span class="pipe-label">260 lignes</span>
+        </div>
+        <div class="pipe-arrow">→</div>
+        <div class="pipe-node">
+          <span class="pipe-num">01</span>
+          <span class="pipe-label">Labels</span>
+        </div>
+        <div class="pipe-arrow">→</div>
+        <div class="pipe-node">
+          <span class="pipe-num">02</span>
+          <span class="pipe-label">Périmètre</span>
+        </div>
+        <div class="pipe-arrow">→</div>
+        <div class="pipe-node">
+          <span class="pipe-num">03</span>
+          <span class="pipe-label">Doublons</span>
+        </div>
+        <div class="pipe-arrow">→</div>
+        <div class="pipe-node">
+          <span class="pipe-num">04</span>
+          <span class="pipe-label">Dates</span>
+        </div>
+        <div class="pipe-arrow">→</div>
+        <div class="pipe-node">
+          <span class="pipe-num">05</span>
+          <span class="pipe-label">Précision</span>
+        </div>
+        <div class="pipe-arrow">→</div>
+        <div class="pipe-node">
+          <span class="pipe-num">06</span>
+          <span class="pipe-label">Guerres</span>
+        </div>
+        <div class="pipe-arrow">→</div>
+        <div class="pipe-node pipe-node--output">
+          <span class="pipe-num">CSV propre</span>
+          <span class="pipe-label">198 lignes</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── ÉTAPE 1 ─────────────────────────────────────────────────────────── -->
+    <section class="content-section">
+      <div class="step-header">
+        <div class="step-num">01</div>
+        <div>
+          <div class="section-label">Étape 1</div>
+          <h2 class="section-title">Résolution des labels non résolus</h2>
+        </div>
+      </div>
+      <div class="section-body">
+        <p>
+          Wikidata retourne parfois un identifiant brut (QID) au lieu d'un libellé lisible,
+          lorsque l'entité n'a pas de nom défini en anglais ou en français.
+          Un dictionnaire de corrections manuelles (<code>LABEL_FIXES</code>) remplace
+          ces QID par leurs noms corrects.
+        </p>
+      </div>
+      <div class="code-block">
+        <div class="code-header">
+          <span>clean_ottoman_battles.py — étape 1</span>
+          <span class="code-lang">PYTHON</span>
+        </div>
+        <pre>LABEL_FIXES = {
+    "Q115732142": "Battle of Sântimbru (March 27)",
+    "Q136033321": "Battle of Schladming",
+    "Q9333973":   "Sasiv Horn",   # lieu en Ukraine, filtré ensuite
+}
+
+def resolve_labels(rows):
+    for row in rows:
+        for field in ("battleLabel", "locationLabel"):
+            if row[field] in LABEL_FIXES:
+                row[field] = LABEL_FIXES[row[field]]
+    return rows</pre>
+      </div>
+    </section>
+
+    <!-- ── ÉTAPE 2 ─────────────────────────────────────────────────────────── -->
+    <section class="content-section">
+      <div class="step-header">
+        <div class="step-num">02</div>
+        <div>
+          <div class="section-label">Étape 2</div>
+          <h2 class="section-title">Filtre périmètre ottoman-balkanique</h2>
+        </div>
+      </div>
+      <div class="section-body">
+        <p>
+          Le filtre géographique SPARQL (lat 35–48°N, lon 13–30°E) capture parfois des batailles
+          sans lien avec les Ottomans : guerres vénitiennes, conflits aragonais, révoltes siciliennes.
+          Une liste noire de guerres hors périmètre (<code>OUT_OF_SCOPE_WARS</code>) permet de les exclure,
+          à condition qu'elles ne contiennent aucun mot-clé ottoman dans leurs champs.
+        </p>
+      </div>
+      <div class="code-block">
+        <div class="code-header">
+          <span>clean_ottoman_battles.py — étape 2</span>
+          <span class="code-lang">PYTHON</span>
+        </div>
+        <pre>OUT_OF_SCOPE_WARS = {
+    "First Anglo-Dutch War",
+    "Franco-Dutch War",
+    "Aragonese conquest of Naples",
+    "War of Chioggia",
+    "Venetian–Genoese Wars",
+    ...
+}
+
+OTTOMAN_KEYWORDS = ["ottoman", "turk", "dardanelles", "gallipoli"]
+
+def filter_out_of_scope(rows):
+    kept = []
+    for row in rows:
+        in_blacklist = row["part_ofLabel"] in OUT_OF_SCOPE_WARS
+        is_ottoman   = any(kw in (row["battleLabel"] + row["part_ofLabel"]).lower()
+                           for kw in OTTOMAN_KEYWORDS)
+        if not (in_blacklist and not is_ottoman):
+            kept.append(row)
+    return kept</pre>
+      </div>
+    </section>
+
+    <!-- ── ÉTAPE 3 ─────────────────────────────────────────────────────────── -->
+    <section class="content-section">
+      <div class="step-header">
+        <div class="step-num">03</div>
+        <div>
+          <div class="section-label">Étape 3</div>
+          <h2 class="section-title">Déduplication</h2>
+        </div>
+      </div>
+      <div class="section-body">
+        <p>
+          Une même bataille peut apparaître plusieurs fois dans Wikidata si elle est associée
+          à plusieurs lieux ou plusieurs conflits parents. Le script groupe les lignes
+          par <code>(wikidata_url, date)</code> et :
+        </p>
+        <p>
+          — retient le lieu le plus spécifique (un château plutôt qu'une mer ou un fleuve) <br>
+          — fusionne les conflits parents distincts séparés par un « | »
+        </p>
+      </div>
+      <div class="code-block">
+        <div class="code-header">
+          <span>clean_ottoman_battles.py — étape 3</span>
+          <span class="code-lang">PYTHON</span>
+        </div>
+        <pre>def location_specificity_score(location):
+    # Les termes génériques (mer, golfe, fleuve) ont un score élevé
+    generic = ["sea", "ocean", "gulf", "river", "aegean", "adriatic"]
+    return sum(1 for term in generic if term in location.lower())
+
+def deduplicate(rows):
+    groups = defaultdict(list)
+    for row in rows:
+        groups[(row["wikidata_url"], row["date"])].append(row)
+
+    result = []
+    for (url, date), group in groups.items():
+        best = min(group, key=lambda r: location_specificity_score(r["locationLabel"]))
+        all_parts = sorted({r["part_ofLabel"] for r in group if r["part_ofLabel"]})
+        best["part_ofLabel"] = " | ".join(all_parts)
+        result.append(best)
+    return result</pre>
+      </div>
+    </section>
+
+    <!-- ── ÉTAPE 4 ─────────────────────────────────────────────────────────── -->
+    <section class="content-section">
+      <div class="step-header">
+        <div class="step-num">04</div>
+        <div>
+          <div class="section-label">Étape 4</div>
+          <h2 class="section-title">Résolution des conflits de dates</h2>
+        </div>
+      </div>
+      <div class="section-body">
+        <p>
+          Certaines batailles ont deux dates dans Wikidata : une date approximative
+          (<code>1389-01-01</code>, seule l'année est connue) et une date précise
+          (<code>1389-07-06</code>). Le script conserve la date précise et supprime
+          l'approximative. Si plusieurs dates précises distinctes existent, ce sont
+          des événements réellement différents — ils sont tous conservés.
+        </p>
+      </div>
+      <div class="code-block">
+        <div class="code-header">
+          <span>clean_ottoman_battles.py — étape 4</span>
+          <span class="code-lang">PYTHON</span>
+        </div>
+        <pre>def resolve_multi_dates(rows):
+    groups = defaultdict(list)
+    for row in rows:
+        groups[row["wikidata_url"]].append(row)
+
+    result = []
+    for url, group in groups.items():
+        precise = [r for r in group if date_precision(r["date"]) == "day"]
+        approx  = [r for r in group if date_precision(r["date"]) != "day"]
+
+        if precise:
+            precise_dates = {r["date"] for r in precise}
+            if len(precise_dates) == 1:
+                result.append(precise[0])   # date précise unique → on garde
+            else:
+                result.extend(precise)      # dates distinctes → événements différents
+        else:
+            result.append(approx[0])        # que des approx → garder la première
+    return result</pre>
+      </div>
+    </section>
+
+    <!-- ── ÉTAPE 5 ─────────────────────────────────────────────────────────── -->
+    <section class="content-section">
+      <div class="step-header">
+        <div class="step-num">05</div>
+        <div>
+          <div class="section-label">Étape 5</div>
+          <h2 class="section-title">Ajout de la colonne date_precision</h2>
+        </div>
+      </div>
+      <div class="section-body">
+        <p>
+          Wikidata encode la précision des dates de manière implicite :
+          <code>YYYY-01-01</code> signifie "seule l'année est connue",
+          <code>YYYY-MM-01</code> signifie "seul le mois est connu".
+          Ce script ajoute une colonne <code>date_precision</code> explicite
+          (<code>year</code> / <code>month</code> / <code>day</code>)
+          pour faciliter les analyses temporelles.
+        </p>
+      </div>
+      <div class="code-block">
+        <div class="code-header">
+          <span>clean_ottoman_battles.py — étape 5</span>
+          <span class="code-lang">PYTHON</span>
+        </div>
+        <pre>def date_precision(date_str):
+    parts = date_str.split("-")
+    if parts[1] == "01" and parts[2] == "01":
+        return "year"    # ex: 1389-01-01 → seule l'année est connue
+    if parts[2] == "01":
+        return "month"   # ex: 1389-07-01 → mois connu
+    return "day"         # ex: 1389-07-06 → date complète
+
+# Résultat dans le corpus nettoyé :
+# day   : 89 batailles  (45%)
+# year  : 87 batailles  (44%)
+# month : 22 batailles  (11%)</pre>
+      </div>
+    </section>
+
+    <!-- ── ÉTAPE 6 ─────────────────────────────────────────────────────────── -->
+    <section class="content-section">
+      <div class="step-header">
+        <div class="step-num">06</div>
+        <div>
+          <div class="section-label">Étape 6</div>
+          <h2 class="section-title">Harmonisation des noms de guerres</h2>
+        </div>
+      </div>
+      <div class="section-body">
+        <p>
+          Wikidata utilise parfois plusieurs libellés différents pour désigner le même conflit.
+          Un dictionnaire d'harmonisation (<code>WAR_HARMONIZATION</code>) normalise ces variantes
+          vers une forme canonique unique, évitant ainsi que le même conflit apparaisse sous
+          deux nœuds distincts dans l'analyse de réseau.
+        </p>
+      </div>
+      <div class="code-block">
+        <div class="code-header">
+          <span>clean_ottoman_battles.py — étape 6</span>
+          <span class="code-lang">PYTHON</span>
+        </div>
+        <pre>WAR_HARMONIZATION = {
+    "Byzantine–Ottoman wars":          "Byzantine–Ottoman Wars",
+    "Hungarian–Ottoman War":           "Ottoman–Hungarian Wars",
+    "Venetian–Ottoman Wars":           "Ottoman–Venetian Wars",
+    "Cretan War of 1645-1669":         "Cretan War (1645–1669)",
+    "Austro-Turkish War of 1663–1664": "Austro-Turkish War (1663–1664)",
+    "Polish–Ottoman War of 1683–99":   "Great Turkish War (1683–1699)",
+    "Great Turkish War":               "Great Turkish War (1683–1699)",
+}
+
+def harmonize_wars(rows):
+    for row in rows:
+        original = row.get("part_ofLabel", "")
+        row["part_ofLabel"] = WAR_HARMONIZATION.get(original, original)
+    return rows</pre>
+      </div>
+    </section>
+
+    <!-- ── RÉSULTAT ───────────────────────────────────────────────────────── -->
+    <section class="content-section">
+      <div class="section-label">Résultat</div>
+      <h2 class="section-title">Rapport de nettoyage</h2>
+      <div class="section-body">
+        <p>
+          À l'issue des 6 étapes, le corpus passe de 260 à 198 entrées valides,
+          soit une réduction de 62 lignes (24 %).
+        </p>
+      </div>
+
+      <div class="report-grid">
+        <div class="report-card">
+          <span class="report-num">260</span>
+          <span class="report-lbl">lignes brutes</span>
+        </div>
+        <div class="report-card report-card--removed">
+          <span class="report-num">−62</span>
+          <span class="report-lbl">supprimées / fusionnées</span>
+        </div>
+        <div class="report-card report-card--final">
+          <span class="report-num">198</span>
+          <span class="report-lbl">entrées finales</span>
+        </div>
+      </div>
+
+      <div class="dl-links" style="margin-top: 32px;">
+        <a class="dl-btn" href="scripts/clean_ottoman_battles.py" download>
+          ⬇ Télécharger le script Python
+        </a>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <span>Muhamed Mehic · Université de Neuchâtel · 2026</span>
+    <span>Données : <a href="https://www.wikidata.org" target="_blank">Wikidata</a> (CC0)</span>
+  </footer>
+
+</body>
+</html>
