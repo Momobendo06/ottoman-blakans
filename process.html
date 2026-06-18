@@ -24,7 +24,7 @@
     <h1 class="page-title">260 → 198 entrées,<br><em>6 étapes en Python</em></h1>
     <p class="page-desc">
       Les données brutes extraites de Wikidata contiennent des doublons, des labels non résolus
-      et des batailles hors périmètre. Ce pipeline Python les transforme en un corpus
+      et des batailles hors périmètre. Ce script Python les transforme en un corpus
       propre et analysable.
     </p>
   </header>
@@ -34,7 +34,7 @@
     <!-- ── OVERVIEW ───────────────────────────────────────────────────────── -->
     <section class="content-section">
       <div class="section-label">Vue d'ensemble</div>
-      <h2 class="section-title">Le pipeline en un coup d'œil</h2>
+      <h2 class="section-title">Le script en un coup d'œil</h2>
       <div class="section-body">
         <p>
           Le script <code>clean_ottoman_battles.py</code> prend en entrée le CSV brut exporté
@@ -54,49 +54,6 @@ python clean_ottoman_battles.py --output resultat.csv
 python clean_ottoman_battles.py --no-filter-scope</pre>
       </div>
 
-      <!-- Diagramme des étapes -->
-      <div class="pipeline-diagram">
-        <div class="pipe-node pipe-node--input">
-          <span class="pipe-num">CSV brut</span>
-          <span class="pipe-label">260 lignes</span>
-        </div>
-        <div class="pipe-arrow">→</div>
-        <div class="pipe-node">
-          <span class="pipe-num">01</span>
-          <span class="pipe-label">Labels</span>
-        </div>
-        <div class="pipe-arrow">→</div>
-        <div class="pipe-node">
-          <span class="pipe-num">02</span>
-          <span class="pipe-label">Périmètre</span>
-        </div>
-        <div class="pipe-arrow">→</div>
-        <div class="pipe-node">
-          <span class="pipe-num">03</span>
-          <span class="pipe-label">Doublons</span>
-        </div>
-        <div class="pipe-arrow">→</div>
-        <div class="pipe-node">
-          <span class="pipe-num">04</span>
-          <span class="pipe-label">Dates</span>
-        </div>
-        <div class="pipe-arrow">→</div>
-        <div class="pipe-node">
-          <span class="pipe-num">05</span>
-          <span class="pipe-label">Précision</span>
-        </div>
-        <div class="pipe-arrow">→</div>
-        <div class="pipe-node">
-          <span class="pipe-num">06</span>
-          <span class="pipe-label">Guerres</span>
-        </div>
-        <div class="pipe-arrow">→</div>
-        <div class="pipe-node pipe-node--output">
-          <span class="pipe-num">CSV propre</span>
-          <span class="pipe-label">198 lignes</span>
-        </div>
-      </div>
-    </section>
 
     <!-- ── ÉTAPE 1 ─────────────────────────────────────────────────────────── -->
     <section class="content-section">
@@ -110,7 +67,7 @@ python clean_ottoman_battles.py --no-filter-scope</pre>
       <div class="section-body">
         <p>
           Wikidata retourne parfois un identifiant brut (QID) au lieu d'un libellé lisible,
-          lorsque l'entité n'a pas de nom défini en anglais ou en français.
+          lorsque l'objet n'a pas de nom défini en anglais ou en français.
           Un dictionnaire de corrections manuelles (<code>LABEL_FIXES</code>) remplace
           ces QID par leurs noms corrects.
         </p>
@@ -240,7 +197,7 @@ def deduplicate(rows):
           (<code>1389-01-01</code>, seule l'année est connue) et une date précise
           (<code>1389-07-06</code>). Le script conserve la date précise et supprime
           l'approximative. Si plusieurs dates précises distinctes existent, ce sont
-          des événements réellement différents — ils sont tous conservés.
+          des événements complétement différents — ils sont tous conservés.
         </p>
       </div>
       <div class="code-block">
@@ -320,7 +277,7 @@ def deduplicate(rows):
       </div>
       <div class="section-body">
         <p>
-          Wikidata utilise parfois plusieurs libellés différents pour désigner le même conflit.
+          Wikidata appelle parfois un conflit par différentes appellations pour désigner le même conflit.
           Un dictionnaire d'harmonisation (<code>WAR_HARMONIZATION</code>) normalise ces variantes
           vers une forme canonique unique, évitant ainsi que le même conflit apparaisse sous
           deux nœuds distincts dans l'analyse de réseau.
@@ -355,7 +312,7 @@ def harmonize_wars(rows):
       <h2 class="section-title">Rapport de nettoyage</h2>
       <div class="section-body">
         <p>
-          À l'issue des 6 étapes, le corpus passe de 260 à 198 entrées valides,
+          Apres ces 6 étapes, le corpus passe de 260 à 198 entrées valides,
           soit une réduction de 62 lignes (24 %).
         </p>
       </div>

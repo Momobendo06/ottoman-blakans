@@ -23,8 +23,8 @@
     <div class="page-eyebrow">Source des données</div>
     <h1 class="page-title">260 batailles,<br><em>une requête SPARQL</em></h1>
     <p class="page-desc">
-      Les données proviennent de Wikidata, la base de connaissances libre et collaborative
-      du projet Wikimedia. Elles ont été extraites via une requête SPARQL ciblant
+      Les données proviennent de Wikidata, un site open-source libre et collaborative du projet Wikidata. 
+      Elles ont été extraites via une requête SPARQL ciblant
       les batailles ottomanes dans les Balkans entre 1354 et 1683.
     </p>
   </header>
@@ -43,8 +43,8 @@
           via le langage SPARQL.
         </p>
         <p>
-          La requête SPARQL a été construite pour extraire toutes les batailles
-          ayant eu lieu dans le périmètre géographique des Balkans
+          La requête SPARQL a été consue pour extraire toutes les batailles
+          ayant eu lieu dans la zone géographique des Balkans
           (latitude 35–48°N, longitude 13–30°E) et attribuées à un sultan ottoman.
           L'attribution des sultans a été réalisée automatiquement en comparant
           la date de chaque bataille aux dates de règne définies dans l'extracteur.
@@ -87,7 +87,7 @@ ORDER BY ?date</pre>
       <div class="section-body">
         <p>
           Le corpus brut extrait de Wikidata contient <strong>260 entrées</strong>,
-          couvrant la période 1354–1683. Après nettoyage (voir la page Traitement),
+          et couvre la période 1354–1683. Après avoir nettoyé les données avec python,
           198 entrées valides ont été retenues pour les analyses.
           Chaque entrée correspond à une bataille unique et contient les colonnes suivantes :
         </p>
@@ -212,8 +212,8 @@ ORDER BY ?date</pre>
       <div class="section-body">
         <p>
           Le corpus couvre 19 sultans (dont une période d'interrègne 1402–1413).
-          La distribution est inégale : Mehmed II concentre à lui seul 34 batailles,
-          soit 17 % du corpus, reflet de son règne particulièrement conquérant
+          La distribution est large avec au sommet Mehmed II qui concentre à lui seul 34 batailles,
+          soit 17 % du corpus. Cela reflète son règne particulièrement conquérant
           (prise de Constantinople en 1453, expansion en Grèce et dans les Balkans).
         </p>
       </div>
