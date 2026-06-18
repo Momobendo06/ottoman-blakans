@@ -1,6 +1,5 @@
 # L'expension ottomane dans les balkans (1354-1683)
 **Projet personnel - Data Science - Université de Neuchâtel - 2026**
-### Tout le projet est sur la page internet [https://github.com/Momobendo06/ottoman-blakans](https://github.com/Momobendo06/ottoman-blakans)
 ---
 
 ## 1. Question de recherche
